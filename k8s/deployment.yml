@@ -13,11 +13,15 @@ spec:
     metadata:
       labels:
         app: order-service
+      annotations:
+        prometheus.io/scrape : "true"
+        prometheus.io/path : /actuator/prometheus
+        prometheus.io/port : "9002"
     spec:
       containers:
         - name: order-service
-          image: ghcr.io/nickgamu/order-service
-          imagePullPolicy: IfNotPresent
+          image: order-service
+          imagePullPolicy: Always
           lifecycle:
             preStop:
               exec:
@@ -27,13 +31,22 @@ spec:
           env:
             - name: BPL_JVM_THREAD_COUNT
               value: "50"
-            - name: POLAR_CATALOG_SERVICE_URI
-              value: http://catalog-service
-            - name: SPRING_CLOUD_CONFIG_URI
-              value: http://config-service
-            - name: SPRING_RABBITMQ_HOST
-              value: polar-rabbitmq
-            - name: SPRING_R2DBC_URL
-              value: r2dbc:postgresql://polar-postgres/polardb_order
-            - name: SPRING_FLYWAY_URL
-              value: jdbc:postgresql://polar-postgres/polardb_order
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 9002
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 9002
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          volumeMounts:
+            - name: order-config-volume
+              mountPath: /workspace/config
+      volumes:
+        - name: order-config-volume
+          configMap:
+            name: order-config

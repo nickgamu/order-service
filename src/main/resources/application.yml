@@ -29,7 +29,7 @@ spring:
               transacted: true
 
     config:
-      uri: http://config-service
+      uri: http://localhost:8888
       request-connect-timeout: 5000
       request-read-timeout: 5000
       fail-fast: true
@@ -38,14 +38,12 @@ spring:
         initial-interval: 1000
         max-interval: 2000
         multiplier: 1.1
-
   rabbitmq:
     host: localhost
     port: 5672
-    username: guest
-    password: guest
+    username: user
+    password: password
     connection-timeout: 5s
-
   r2dbc:
     username: user
     password: password
@@ -58,6 +56,28 @@ spring:
     user: ${spring.r2dbc.username}
     password: ${spring.r2dbc.password}
     url: jdbc:postgresql://localhost:5432/polardb_order
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/PolarBookshop
 
 polar:
   catalog-service-uri: "http://localhost:9001"
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh,health
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+      probes:
+        enabled: true
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"

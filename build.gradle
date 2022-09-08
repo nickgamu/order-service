@@ -21,6 +21,8 @@ repositories {
 ext {
 	set('springCloudVersion', "2021.0.3")
 	set('testcontainersVersion', "1.17.3")
+	set('testKeycloakVersion', "2.3.0")
+	set('otelVersion', "1.17.0")
 }
 
 bootBuildImage {
@@ -43,6 +45,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.cloud:spring-cloud-starter-config'
 	implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.flywaydb:flyway-core'
 	runtimeOnly 'org.springframework:spring-jdbc'
@@ -64,6 +67,10 @@ dependencies {
 			classifier = "test-binder"
 		}
 	}
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation "com.github.dasniko:testcontainers-keycloak:${testKeycloakVersion}"
+	runtimeOnly "io.opentelemetry.javaagent:opentelemetry-javaagent:${otelVersion}"
 }
 
 dependencyManagement {
