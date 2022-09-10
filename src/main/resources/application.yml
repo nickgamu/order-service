@@ -11,7 +11,7 @@ spring:
   lifecycle:
     timeout-per-shutdown-phase: 15s
   config:
-    import: "optional:configserver:"
+    import: "" #"optional:configserver:"
   cloud:
     function:
       definition: dispatchOrder
@@ -29,6 +29,7 @@ spring:
               transacted: true
 
     config:
+      enabled: false
       uri: http://localhost:8888
       request-connect-timeout: 5000
       request-read-timeout: 5000
