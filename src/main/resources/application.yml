@@ -45,8 +45,8 @@ spring:
     password: password
     connection-timeout: 5s
   r2dbc:
-    username: user
-    password: password
+    username: polar-admin
+    password: Postgres@1895#*
     url: r2dbc:postgresql://localhost:5432/polardb_order
     pool:
       max-create-connection-time: 2s
